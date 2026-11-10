@@ -103,13 +103,11 @@ def api_live_status():
 
 
 def site_capability(s):
-    """网页端能否直接运行该站源: cms / type4 / py / tvbox(仅TVBox可用)"""
+    """网页端能否直接运行该站源: cms / py / tvbox(仅TVBox可用)"""
     t = s.get('type')
     api = str(s.get('api', ''))
     if t == 1 and api.startswith('http'):
         return 'cms'
-    if t == 4 and api.startswith('http'):
-        return 'type4'
     if t == 3 and api.startswith('./lib/') and api.endswith('.py'):
         return 'py'
     return 'tvbox'
@@ -173,6 +171,32 @@ def pwa_sw():
                     headers={'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/'})
 
 
+# ---- 版本号 / 更新记录: 都来自 CHANGELOG.md, 最上面一条就是当前版本 ----
+def _read_changelog():
+    log = []
+    try:
+        with open(os.path.join(BASE_DIR, 'CHANGELOG.md'), encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                m = re.match(r'^##\s*v?([0-9][0-9.]*)\s*(?:\((.*?)\))?', line)
+                if m:
+                    log.append({'version': m.group(1), 'date': m.group(2) or '', 'items': []})
+                elif log and line.startswith('- '):
+                    log[-1]['items'].append(line[2:].strip())
+    except OSError:
+        pass
+    return log
+
+
+CHANGELOG = _read_changelog()
+VERSION = CHANGELOG[0]['version'] if CHANGELOG else ''
+
+
+@app.route('/api/version')
+def api_version():
+    return jsonify({'version': VERSION, 'log': CHANGELOG})
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -184,14 +208,13 @@ def api_config():
 
     sites = []
     for s in cfg.get('sites', []):
+        if site_capability(s) == 'tvbox':
+            continue
         sites.append({
             'key': s.get('key', ''),
             'name': s.get('name', ''),
             'type': s.get('type', 0),
             'api': s.get('api', ''),
-            'searchable': s.get('searchable', 0),
-            'filterable': s.get('filterable', 0),
-            'jar': s.get('jar', ''),
             'ext': s.get('ext', '') if isinstance(s.get('ext'), str) else '',
             'cap': site_capability(s),
         })
@@ -226,6 +249,7 @@ def api_config():
         'parses': parses,
         'warningText': cfg.get('warningText', ''),
         'liveState': LIVE_STATE,
+        'version': VERSION,
     })
 
 
@@ -442,41 +466,6 @@ def api_parse():
         return jsonify({'error': 'invalid service'}), 400
 
 
-@app.route('/api/type4')
-def api_type4():
-    api_url = request.args.get('api', '')
-    method = request.args.get('method', 'home')
-    tid = request.args.get('tid', '')
-    pg = request.args.get('pg', '1')
-    wd = request.args.get('wd', '')
-
-    if not api_url:
-        return jsonify({'error': 'no api'}), 400
-
-    try:
-        if method == 'home':
-            r = SESSION.get(f"{api_url}&do=home", timeout=10)
-        elif method == 'category':
-            r = SESSION.get(f"{api_url}&do=category&tid={tid}&pg={pg}", timeout=10)
-        elif method == 'detail':
-            r = SESSION.get(f"{api_url}&do=detail&wd={tid}", timeout=10)
-        elif method == 'search':
-            r = SESSION.get(f"{api_url}&do=search&wd={wd}&pg={pg}", timeout=10)
-        elif method == 'play':
-            flag = request.args.get('flag', '')
-            play_id = request.args.get('play_id', '')
-            r = SESSION.get(f"{api_url}&do=play&flag={flag}&url={play_id}", timeout=10)
-        else:
-            return jsonify({'error': 'unknown method'}), 400
-
-        try:
-            return jsonify(r.json())
-        except:
-            return jsonify({'raw': r.text[:3000]})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
 def _cms_url(api, **params):
     sep = '&' if '?' in api else '?'
     q = '&'.join(f"{k}={quote(str(v))}" for k, v in params.items() if v not in (None, ''))
@@ -500,28 +489,14 @@ def _cms_norm(d, pg):
 
 @app.route('/api/cms')
 def api_cms():
-    """苹果CMS(type 1) JSON 接口代理: method=home|category|detail|search"""
+    """苹果CMS(type 1) 影片详情 (搜索结果点开后用)"""
     site = _site_by_key(request.args.get('key', ''))
     if not site or site_capability(site) != 'cms':
         return jsonify({'error': 'not a cms site'}), 400
-    api = site['api']
-    method = request.args.get('method', 'home')
-    pg = request.args.get('pg', '1')
+    if request.args.get('method', 'detail') != 'detail':
+        return jsonify({'error': 'unknown method'}), 400
     try:
-        if method == 'home':
-            d = _cms_get(api, ac='detail', pg=1)
-            cls = _cms_get(api, ac='list').get('class') or d.get('class') or []
-            out = _cms_norm(d, 1)
-            out['class'] = cls
-        elif method == 'category':
-            out = _cms_norm(_cms_get(api, ac='detail', t=request.args.get('tid', ''), pg=pg), pg)
-        elif method == 'detail':
-            out = _cms_norm(_cms_get(api, ac='detail', ids=request.args.get('ids', '')), 1)
-        elif method == 'search':
-            out = _cms_norm(_cms_get(api, ac='detail', wd=request.args.get('wd', ''), pg=pg), pg)
-        else:
-            return jsonify({'error': 'unknown method'}), 400
-        return jsonify(out)
+        return jsonify(_cms_norm(_cms_get(site['api'], ac='detail', ids=request.args.get('ids', '')), 1))
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -929,7 +904,7 @@ if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 80))     # Termux/安卓无 root 不能用 80, 请设 PORT=8080
     DEBUG = os.environ.get('DEBUG') == '1'     # 开发时 DEBUG=1 (带自动重载)
     print("=" * 50)
-    print("  Florist-TV Web Player")
+    print(f"  Florist-TV Web Player  v{VERSION}")
     print(f"  http://localhost:{PORT}")
     print("=" * 50)
     # debug 重载器会起两个进程, 只在实际提供服务的进程里同步

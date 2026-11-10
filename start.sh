@@ -61,6 +61,8 @@ if [ "$(cat .deps_ok 2>/dev/null)" != "$req_sum" ]; then
 fi
 
 # ---- 3. 启动 ----
+ver=$(grep -m1 '^## v' CHANGELOG.md 2>/dev/null | awk '{print $2}')
+echo "Florist-TV ${ver:-} (更新记录见 CHANGELOG.md)"
 pkill -f web_player.py 2>/dev/null && sleep 1     # 结束旧进程, 避免端口被占
 termux-wake-lock 2>/dev/null
 IP=$(ifconfig 2>/dev/null | grep -Eo "inet (192|10|172)\.[0-9.]+" | head -1 | cut -d" " -f2)

@@ -32,6 +32,13 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 
 /* Header */
 .header{display:flex;align-items:center;padding:0 20px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);gap:16px;flex-shrink:0}
+.ver{font-size:11px;color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:1px 7px;cursor:pointer;white-space:nowrap}
+.ver:hover{color:var(--accent);border-color:var(--accent)}
+.cl-list{max-height:60vh;overflow-y:auto;margin-bottom:4px}
+.cl-ver{font-size:14px;font-weight:600;margin:12px 0 6px}
+.cl-ver small{font-weight:400;color:var(--text2);margin-left:8px}
+.cl-ver .cur{font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 5px;margin-left:8px;font-weight:400}
+.cl-list ul{margin:0 0 0 18px;padding:0;font-size:13px;color:var(--text2);line-height:1.8}
 .logo{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
 .nav{display:flex;gap:4px;margin-left:20px}
 .nav-btn{padding:8px 18px;border:none;background:transparent;color:var(--text2);cursor:pointer;border-radius:8px;font-size:14px;transition:all .2s}
@@ -111,19 +118,8 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 .custom-src-item .del{color:var(--accent);cursor:pointer;padding:2px 6px;border-radius:4px}
 .custom-src-item .del:hover{background:var(--accent);color:#fff}
 
-/* Sites Page */
-#page-sites{padding:20px;overflow-y:auto}
-.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.site-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.site-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(233,69,96,.15)}
-.site-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.site-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0}
-.site-card-title{font-size:14px;font-weight:600;line-height:1.3}
-.site-card-type{font-size:11px;color:var(--text2);margin-top:2px}
-.site-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.tag{padding:3px 8px;border-radius:4px;font-size:11px;background:var(--bg);color:var(--text2);border:1px solid var(--border)}
-.tag.can-search{border-color:var(--green);color:var(--green)}
-.tag.can-filter{border-color:var(--blue);color:var(--blue)}
+/* Search Page */
+#page-search{padding:20px;overflow-y:auto}
 
 /* Parse Page */
 #page-parse{padding:20px;overflow-y:auto}
@@ -146,16 +142,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 .cat-header h2{font-size:18px;font-weight:600}
 .back-btn{padding:6px 14px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;cursor:pointer;font-size:13px}
 .back-btn:hover{border-color:var(--accent)}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.filter-group{display:flex;gap:4px;flex-wrap:wrap}
-.filter-group label{font-size:12px;color:var(--text2);padding:6px 10px;background:var(--bg2);border-radius:4px;cursor:pointer;border:1px solid transparent;transition:all .15s}
-.filter-group label:hover{border-color:var(--border)}
-.filter-group label.active{border-color:var(--accent);color:var(--accent)}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.media-card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.media-card:hover{border-color:var(--accent);transform:scale(1.02)}
-.media-card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--bg3)}
-.media-card .media-title{padding:8px 10px;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* Modal Player */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center}
@@ -309,14 +296,9 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   .group-tab{padding:5px 12px}
   .player-container.web-full{aspect-ratio:auto}
 
-  /* 点播 */
-  #page-sites{padding:12px}
-  .sites-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .site-card{padding:12px}
-  .site-icon{width:36px;height:36px;font-size:16px}
+  /* 搜索结果 */
+  #page-search{padding:12px}
   .media-grid{grid-template-columns:repeat(3,1fr);gap:8px}
-  .media-card .media-title{padding:6px 6px;font-size:11px}
-  .filter-row{max-height:112px;overflow-y:auto}
   .cat-header h2{font-size:16px}
 
   /* 播放弹窗: 全屏, 播放器吸顶, 下方可滚动选集 */
@@ -379,7 +361,6 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   .live-channels-col{border-right:none}
 
   .media-grid{grid-template-columns:repeat(4,1fr)}
-  .sites-grid{grid-template-columns:repeat(3,1fr)}
 
   .modal-overlay{align-items:flex-start}
   .modal-content{width:100%;max-width:none;height:100vh;height:100dvh;max-height:none;border-radius:0;overflow-y:auto}
@@ -415,7 +396,6 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   .sr-src{padding:7px 13px;font-size:13px}
   .sr-play{padding:11px 26px}
   .np-btn{padding:9px 14px}
-  .media-card:hover{transform:none}
   .sr-poster:hover img{transform:none}
   .hist-item{padding:10px}
   .modal-close{width:42px;height:42px}
@@ -428,7 +408,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   .modal-content{max-height:calc(100dvh - env(safe-area-inset-top));padding-bottom:env(safe-area-inset-bottom)}
   .modal-close{margin-top:env(safe-area-inset-top)}
   .player-container.web-full{padding-top:env(safe-area-inset-top)}
-  .channel-list,.live-src-list,#page-sites,#page-parse{padding-bottom:env(safe-area-inset-bottom)}
+  .channel-list,.live-src-list,#page-search,#page-parse{padding-bottom:env(safe-area-inset-bottom)}
 }
 @media (display-mode:standalone) and (max-width:1024px){
   .modal-content{height:calc(100dvh - env(safe-area-inset-top))}
@@ -439,9 +419,9 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 <div class="app">
   <header class="header">
     <div class="logo">Florist-TV</div>
+    <span class="ver" id="verBadge" onclick="showChangelog()" title="查看更新记录" style="display:none"></span>
     <nav class="nav">
       <button class="nav-btn active" data-page="live">直播</button>
-      <button class="nav-btn" data-page="sites">点播</button>
       <button class="nav-btn" data-page="parse">解析</button>
     </nav>
     <div class="search-box">
@@ -501,21 +481,13 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
       </div>
     </div>
 
-<!-- Sites Page -->
-    <div class="page" id="page-sites">
-      <div id="sitesView">
-        <div class="sites-grid" id="sitesGrid"></div>
+<!-- Search Page -->
+    <div class="page" id="page-search">
+      <div class="cat-header">
+        <button class="back-btn" onclick="closeSearch()">&larr; 返回</button>
+        <h2 id="catTitle">--</h2>
       </div>
-      <div id="catView" style="display:none">
-        <div class="cat-header">
-          <button class="back-btn" onclick="showSitesList()">&larr; 返回</button>
-          <h2 id="catTitle">--</h2>
-        </div>
-        <div class="filter-row" id="filterRow"></div>
-        <div class="media-grid" id="mediaGrid">
-          <div class="loading"><div class="spinner"></div>加载中...</div>
-        </div>
-      </div>
+      <div class="media-grid" id="mediaGrid"></div>
     </div>
 
     <!-- Parse Page -->
@@ -586,6 +558,17 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   </div>
 </div>
 
+<!-- 更新记录 -->
+<div class="custom-source-modal" id="changelogModal">
+  <div class="custom-source-box">
+    <h3>更新记录</h3>
+    <div class="cl-list" id="changelogList"></div>
+    <div style="text-align:right;margin-top:12px">
+      <button class="back-btn" onclick="document.getElementById('changelogModal').classList.remove('show')">关闭</button>
+    </div>
+  </div>
+</div>
+
 <div class="hist-panel" id="histPanel"></div>
 <div class="toast" id="toast"></div>
 
@@ -602,7 +585,7 @@ async function init() {
     const r = await fetch(`${API}/api/config`);
     config = await r.json();
     loadCustomSources();
-    renderSites();
+    loadVersion();
     renderParseServices();
     autoSelectLive();
     watchLiveCheck();
@@ -721,14 +704,32 @@ function loadCustomSources() {
 }
 
 // ---- Navigation ----
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + btn.dataset.page).classList.add('active');
-  });
-});
+let lastPage = 'live';
+function showPage(name) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  if (name !== 'search') lastPage = name;
+}
+function closeSearch() { searchSeq++; showPage(lastPage); }
+document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+
+// ---- 版本号 / 更新记录 (来自 CHANGELOG.md) ----
+let changelog = [];
+async function loadVersion() {
+  try {
+    const d = await (await fetch(`${API}/api/version`)).json();
+    changelog = d.log || [];
+    const b = document.getElementById('verBadge');
+    if (d.version) { b.textContent = 'v' + d.version; b.style.display = ''; }
+  } catch (e) {}
+}
+function showChangelog() {
+  document.getElementById('changelogList').innerHTML = changelog.map((c, i) =>
+    `<div class="cl-ver">v${escHtml(c.version)}${i === 0 ? '<span class="cur">当前</span>' : ''}<small>${escHtml(c.date)}</small></div>
+     <ul>${c.items.map(x => `<li>${escHtml(x)}</li>`).join('')}</ul>`).join('') || '<div class="loading">暂无记录</div>';
+  document.getElementById('changelogModal').classList.add('show');
+}
+document.getElementById('changelogModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('show'); });
 
 // ---- Live ----
 let liveHls = null;
@@ -987,45 +988,10 @@ function autoSelectLive() {
   loadLiveSource(idx);
 }
 
-// ---- Sites ----
-const CAP_LABEL = { cms: 'CMS', type4: '远程', py: '本地Python', tvbox: '仅TVBox' };
-let onlyUsable = true;
-
-function renderSites() {
-  const grid = document.getElementById('sitesGrid');
-  const colors = ['#e94560','#4361ee','#7b2ff7','#00d26a','#ff6b35','#f72585','#4cc9f0','#ffd166'];
-  const all = config.sites.map((s, i) => ({ s, i })).filter(x => x.s.type === 1 || x.s.type === 3 || x.s.type === 4);
-  const usable = all.filter(x => x.s.cap !== 'tvbox');
-  const shown = onlyUsable ? usable : all;
-
-  const bar = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;color:var(--text2);font-size:13px">
-    <label style="cursor:pointer"><input type="checkbox" ${onlyUsable ? 'checked' : ''} onchange="onlyUsable=this.checked;renderSites()"> 仅显示网页可用站源</label>
-    <span>网页可用 ${usable.length} / 共 ${all.length}（其余 ${all.length - usable.length} 个依赖 TVBox 的 spider.jar 或 JS 引擎，网页无法运行）</span>
-  </div>`;
-
-  grid.innerHTML = bar + shown.map(({ s, i }, n) => {
-    const c = colors[n % colors.length];
-    const initial = s.name.replace(/[^一-龥a-zA-Z0-9]/g, '').substring(0, 2) || '源';
-    const tags = [`<span class="tag ${s.cap === 'tvbox' ? '' : 'can-search'}">${CAP_LABEL[s.cap]}</span>`];
-    if (s.searchable && s.cap !== 'tvbox') tags.push('<span class="tag can-search">可搜索</span>');
-    return `<div class="site-card" style="${s.cap === 'tvbox' ? 'opacity:.55' : ''}" onclick="openSite(${i})">
-      <div class="site-card-header">
-        <div class="site-icon" style="background:${c}">${initial}</div>
-        <div>
-          <div class="site-card-title">${escHtml(s.name)}</div>
-          <div class="site-card-type">Type ${s.type}</div>
-        </div>
-      </div>
-      <div class="site-card-tags">${tags.join('')}</div>
-    </div>`;
-  }).join('');
-}
-
+// ---- 站源调用 (只用于搜索结果的详情和播放) ----
 let currentSite = null;
-let spiderFilters = {};
-let currentSpiderTid = '';
 
-// 统一调用 py / cms 站源，返回标准结构 {class,list,page,pagecount,filters}
+// 取影片详情: py / cms 站源统一返回 {list}
 async function siteCall(method, p = {}) {
   const s = currentSite;
   let data;
@@ -1036,13 +1002,7 @@ async function siteCall(method, p = {}) {
     return data;
   }
   const script = s.api.replace('./lib/', '');
-  const map = {
-    home: ['homeContent', { filter: true }],
-    category: ['categoryContent', [p.tid, String(p.pg || 1), true, p.ext || '']],
-    detail: ['detailContent', { ids: [p.ids] }],
-    search: ['searchContent', [p.wd, false, String(p.pg || 1)]],
-  };
-  const [m, args] = map[method];
+  const [m, args] = ['detailContent', { ids: [p.ids] }];
   const r = await fetch(`${API}/api/spider_call`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ script, ext: s.ext || '', method: m, args })
@@ -1051,84 +1011,6 @@ async function siteCall(method, p = {}) {
   if (data.error) throw new Error(data.error);
   const res = data.result || {};
   return { class: res.class || [], list: res.list || [], page: res.page || 1, pagecount: res.pagecount || 1, filters: res.filters || {} };
-}
-
-function openSite(idx) {
-  document.getElementById('mediaGrid').classList.remove('sr-list');
-  searchMode = false;
-  currentSite = config.sites[idx];
-  document.getElementById('sitesView').style.display = 'none';
-  document.getElementById('catView').style.display = 'block';
-  document.getElementById('catTitle').textContent = currentSite.name;
-  document.getElementById('filterRow').innerHTML = '';
-
-  if (currentSite.cap === 'type4') {
-    loadType4Home();
-  } else if (currentSite.cap === 'py' || currentSite.cap === 'cms') {
-    loadSpiderHome();
-  } else {
-    document.getElementById('mediaGrid').innerHTML =
-      `<div class="loading" style="grid-column:1/-1;color:var(--text2)">
-        此站源依赖 TVBox 的 spider.jar 或 JS 引擎 (${escHtml(currentSite.api || 'spider.jar')})，网页端暂不支持<br>
-        <small style="margin-top:8px;display:block">可勾选“仅显示网页可用站源”隐藏这类站源</small>
-      </div>`;
-  }
-}
-
-async function loadSpiderHome() {
-  const el = document.getElementById('mediaGrid');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>加载分类...</div>';
-  try {
-    const result = await siteCall('home');
-    spiderFilters = result.filters || {};
-    if (currentSite.cap === 'cms') {
-      document.getElementById('filterRow').innerHTML = '<div class="filter-group">' +
-        (result.class || []).map(c => `<label onclick="loadSpiderCategory('${escHtml(c.type_id)}',1)">${escHtml(c.type_name)}</label>`).join('') + '</div>';
-      renderSpiderVideos(result.list, result.page, result.pagecount);
-    } else {
-      renderSpiderClasses(result.class.length ? result.class : result.list);
-    }
-  } catch (e) {
-    el.innerHTML = `<div class="loading" style="color:var(--accent)">加载失败: ${escHtml(e.message)}</div>`;
-  }
-}
-
-function renderSpiderClasses(classes) {
-  const el = document.getElementById('mediaGrid');
-  if (!classes.length) { el.innerHTML = '<div class="loading">无分类</div>'; return; }
-  el.innerHTML = classes.map(c =>
-    `<div class="site-card" onclick="loadSpiderCategory('${escHtml(c.type_id || c.id || '')}', 1)">
-      <div class="site-card-title">${escHtml(c.type_name || c.name || '')}</div>
-    </div>`
-  ).join('');
-}
-
-async function loadSpiderCategory(tid, pg, ext) {
-  const el = document.getElementById('mediaGrid');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
-  currentSpiderTid = tid;
-  if (currentSite.cap === 'py') {
-    const filters = spiderFilters[tid] || [];
-    if (filters.length) renderSpiderFilters(filters, tid);
-    else document.getElementById('filterRow').innerHTML = '';
-  }
-  try {
-    const result = await siteCall('category', { tid, pg, ext: ext || '' });
-    renderSpiderVideos(result.list, result.page || pg, result.pagecount || 1);
-  } catch (e) {
-    el.innerHTML = `<div class="loading" style="color:var(--accent)">加载失败: ${escHtml(e.message)}</div>`;
-  }
-}
-
-function renderSpiderFilters(filters, tid) {
-  const el = document.getElementById('filterRow');
-  el.innerHTML = filters.map(f => {
-    const values = f.value || [];
-    return `<div class="filter-group">
-      <label class="active" onclick="loadSpiderCategory('${escHtml(tid)}', 1)">${escHtml(f.name)}</label>
-      ${values.map(v => `<label onclick="loadSpiderCategory('${escHtml(tid)}', 1, '${escHtml(v.v)}')">${escHtml(v.n)}</label>`).join('')}
-    </div>`;
-  }).join('');
 }
 
 function imgUrl(u) { return u ? `${API}/api/img?u=${encodeURIComponent(u)}` : ''; }
@@ -1175,27 +1057,6 @@ function renderSearchResults(list, q) {
       </div>
     </div>`;
   }).join('');
-}
-
-function renderSpiderVideos(list, pg, pageCount, isSearch) {
-  const el = document.getElementById('mediaGrid');
-  if (isSearch && list.length) { renderSearchResults(list, lastSearchQ); return; }
-  el.classList.remove('sr-list');
-  if (!list.length) { el.innerHTML = '<div class="loading">无内容</div>'; return; }
-  let html = list.map(item =>
-    `<div class="media-card" onclick="openSpiderDetail('${escHtml(item.vod_id || item.id || '')}', '${escHtml(item._site || '')}')">
-      ${item.vod_pic ? `<img src="${escHtml(imgUrl(item.vod_pic))}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" alt="">` : '<div style="aspect-ratio:3/4;background:var(--bg3)"></div>'}
-      <div class="media-title">${escHtml(item.vod_name || '')}${item._siteName ? ` <small style="color:var(--text2)">· ${escHtml(item._siteName)}</small>` : ''}</div>
-    </div>`
-  ).join('');
-  if (pageCount > 1 && !isSearch) {
-    html += `<div style="grid-column:1/-1;display:flex;gap:8px;justify-content:center;padding:16px">
-      ${pg > 1 ? `<button class="back-btn" onclick="loadSpiderCategory('${escHtml(currentSpiderTid)}', ${pg - 1})">上一页</button>` : ''}
-      <span style="padding:6px 14px;color:var(--text2);font-size:13px">第 ${pg}/${pageCount} 页</span>
-      ${pg < pageCount ? `<button class="back-btn" onclick="loadSpiderCategory('${escHtml(currentSpiderTid)}', ${pg + 1})">下一页</button>` : ''}
-    </div>`;
-  }
-  el.innerHTML = html;
 }
 
 async function openSpiderDetail(id, siteKey) {
@@ -1388,92 +1249,6 @@ async function playSpiderContent(li, ei, auto) {
   }
 }
 
-function showSitesList() {
-  document.getElementById('mediaGrid').classList.remove('sr-list');
-  document.getElementById('sitesView').style.display = 'block';
-  document.getElementById('catView').style.display = 'none';
-}
-
-async function loadType4Home() {
-  const el = document.getElementById('mediaGrid');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
-
-  try {
-    const r = await fetch(`${API}/api/type4?api=${encodeURIComponent(currentSite.api)}&method=home`);
-    const data = await r.json();
-    if (data.error) throw new Error(data.error);
-    renderType4List(data);
-  } catch (e) {
-    el.innerHTML = `<div class="loading" style="color:var(--accent)">加载失败: ${e.message}</div>`;
-  }
-}
-
-function renderType4List(data) {
-  const el = document.getElementById('mediaGrid');
-  const list = data.list || data.className || [];
-  if (!list.length) {
-    el.innerHTML = '<div class="loading">无内容</div>';
-    return;
-  }
-
-  if (list[0] && list[0].vod_id) {
-    el.innerHTML = list.map(item =>
-      `<div class="media-card" onclick="openType4Detail('${escHtml(item.vod_id)}')">
-        ${item.vod_pic ? `<img src="${item.vod_pic}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>'" alt="">` : '<div style="aspect-ratio:3/4;background:var(--bg3)"></div>'}
-        <div class="media-title">${escHtml(item.vod_name || '')}</div>
-      </div>`
-    ).join('');
-  } else {
-    el.innerHTML = list.map(c =>
-      `<div class="site-card" onclick="loadType4Category('${escHtml(c.type_id || c.id || '')}')">
-        <div class="site-card-title">${escHtml(c.type_name || c.name || JSON.stringify(c))}</div>
-      </div>`
-    ).join('');
-  }
-}
-
-async function openType4Detail(id) {
-  showToast('加载详情...');
-  try {
-    const r = await fetch(`${API}/api/type4?api=${encodeURIComponent(currentSite.api)}&method=detail&tid=${encodeURIComponent(id)}`);
-    const data = await r.json();
-    if (data.list && data.list[0]) {
-      const vod = data.list[0];
-      showVodModal(vod);
-    }
-  } catch (e) {
-    showToast('加载失败: ' + e.message);
-  }
-}
-
-function showVodModal(vod) {
-  const overlay = document.getElementById('modalOverlay');
-  overlay.classList.add('show');
-  document.getElementById('modalTitle').textContent = vod.vod_name || '';
-  document.getElementById('modalDesc').textContent = vod.vod_content || vod.vod_remarks || '';
-
-  const epSection = document.getElementById('episodeSection');
-  const epList = document.getElementById('epList');
-
-  if (vod.vod_play_url) {
-    const groups = vod.vod_play_url.split('#');
-    epSection.style.display = 'block';
-    epList.innerHTML = groups.map(ep => {
-      const parts = ep.split('$');
-      const name = parts[0] || '';
-      const url = parts[1] || '';
-      return `<button class="ep-btn" onclick="playFromModal('${escHtml(url)}','${escHtml(name)}')">${escHtml(name)}</button>`;
-    }).join('');
-  } else {
-    epSection.style.display = 'none';
-  }
-
-  const firstUrl = vod.vod_play_url ? vod.vod_play_url.split('#')[0].split('$')[1] : '';
-  if (firstUrl) {
-    playFromModal(firstUrl, '');
-  }
-}
-
 async function playFromModal(url, name) {
   document.getElementById('modalTitle').textContent = name || document.getElementById('modalTitle').textContent;
 
@@ -1648,11 +1423,8 @@ async function doSearch() {
   lastSearchQ = q;
   addSearchHistory(q);
   closeHist();
-  document.querySelector('.nav-btn[data-page="sites"]').click();
-  document.getElementById('sitesView').style.display = 'none';
-  document.getElementById('catView').style.display = 'block';
+  showPage('search');
   document.getElementById('catTitle').textContent = '搜索: ' + q;
-  document.getElementById('filterRow').innerHTML = '';
   const el = document.getElementById('mediaGrid');
   el.classList.remove('sr-list');
   el.innerHTML = '<div class="loading"><div class="spinner"></div>正在搜索所有网页可用站源...</div>';
@@ -1669,7 +1441,7 @@ async function doSearch() {
     let list = rankSearch(all, q);
     if (!list.length && final) list = rankSearch(all, q, true);   // 一个相关的都没有时, 退回显示全部
     if (!list.length) { el.innerHTML = `<div class="loading"><div class="spinner"></div>正在搜索 ${done}/${total} ...</div>`; return; }
-    renderSpiderVideos(list, 1, 1, true);
+    renderSearchResults(list, q);
     document.getElementById('catTitle').textContent = `搜索: ${q} (${list.length} 条` + (final ? ')' : `, 已搜 ${done}/${total})`);
   };
   try {
