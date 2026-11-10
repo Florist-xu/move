@@ -1,0 +1,20 @@
+# 运行时生成的数据 (每台设备各自一份, 不进仓库, 这样 git pull 不会冲突)
+history.db
+history.db-*
+img_cache/
+live_check.json
+qist_cache.json
+.deps_ok
+__pycache__/
+*.pyc
+
+# 打包产物和杂项
+dist/
+logo.png
+*.network-response
+.playwright-mcp/
+.claude/
+
+# lib 里只有 .py 站源是网页端需要的, 其余 js/png 是 TVBox 用的
+lib/*
+!lib/*.py
