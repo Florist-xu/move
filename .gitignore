@@ -5,6 +5,7 @@ img_cache/
 live_check.json
 qist_cache.json
 .deps_ok
+.pkg_ver
 __pycache__/
 *.pyc
 

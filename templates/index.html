@@ -1318,7 +1318,8 @@ async function playSpiderContent(li, ei, auto) {
   const line = modalLines[li], ep = line.eps[ei];
   markPlaying(li, ei);
   recordPlayHistory(li, ei);
-  if (modalDp) { modalDp.destroy(); modalDp = null; }
+  stopModalPlayer();
+  const seq = modalPlaySeq;
   const playerEl = document.getElementById('modalPlayer');
   playerEl.innerHTML = '<div class="loading" style="color:#fff;padding:40px"><div class="spinner"></div>解析播放地址...</div>';
   try {
@@ -1336,11 +1337,13 @@ async function playSpiderContent(li, ei, auto) {
       playUrl = ep.url;
       parse = /\.(m3u8|mp4|flv|mp3)(\?|$)/i.test(playUrl) ? 0 : 1;
     }
+    if (seq !== modalPlaySeq) return;      // 解析期间弹窗已关闭或已换集
     if (!playUrl) { playerEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff">未找到播放地址</div>'; return; }
 
     if (parse === 1 && playUrl.startsWith('http')) {
       // 页面型地址：交给解析线路，用 iframe 播放
       const pd = await (await fetch(`${API}/api/parse?url=${encodeURIComponent(playUrl)}&service=${selectedParse + 1}`)).json();
+      if (seq !== modalPlaySeq) return;
       playerEl.innerHTML = `<iframe src="${escHtml(pd.url || playUrl)}" allowfullscreen style="width:100%;height:100%;border:none"></iframe>`;
       return;
     }
@@ -1380,6 +1383,7 @@ async function playSpiderContent(li, ei, auto) {
       playSpiderContent(next, ei, true);
     });
   } catch (e) {
+    if (seq !== modalPlaySeq) return;
     playerEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff">播放失败: ${escHtml(e.message)}</div>`;
   }
 }
@@ -1473,10 +1477,10 @@ function showVodModal(vod) {
 async function playFromModal(url, name) {
   document.getElementById('modalTitle').textContent = name || document.getElementById('modalTitle').textContent;
 
-  if (modalDp) { modalDp.destroy(); modalDp = null; }
+  stopModalPlayer();
+  const seq = modalPlaySeq;
 
   const playerEl = document.getElementById('modalPlayer');
-  playerEl.innerHTML = '';
 
   try {
     let playUrl = url;
@@ -1486,6 +1490,7 @@ async function playFromModal(url, name) {
       const data = await r.json();
       if (data.url) playUrl = data.url;
     }
+    if (seq !== modalPlaySeq) return;
 
     if (playUrl.startsWith('http')) {
       playUrl = `${API}/api/proxy?url=${encodeURIComponent(playUrl)}`;
@@ -1504,7 +1509,17 @@ async function playFromModal(url, name) {
 function closeModal() {
   ['modalTags','modalPeople'].forEach(i => document.getElementById(i).innerHTML = '');
   document.getElementById('modalOverlay').classList.remove('show');
-  if (modalDp) { modalDp.destroy(); modalDp = null; }
+  stopModalPlayer();
+}
+// 彻底停掉弹窗里的播放: DPlayer / iframe 解析播放器 / 还在解析中的请求
+let modalPlaySeq = 0;
+function stopModalPlayer() {
+  modalPlaySeq++;                      // 让还没返回的解析请求作废, 回来后不再创建播放器
+  const el = document.getElementById('modalPlayer');
+  el.querySelectorAll('video,audio').forEach(v => { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) {} });
+  if (modalDp) { try { modalDp.destroy(); } catch (e) {} modalDp = null; }
+  el.querySelectorAll('iframe').forEach(f => { f.src = 'about:blank'; });
+  el.innerHTML = '';
 }
 document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 

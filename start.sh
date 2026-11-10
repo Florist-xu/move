@@ -23,6 +23,29 @@ if [ -d .git ] && [ -z "$NO_UPDATE" ] && command -v git >/dev/null 2>&1; then
   else
     echo "[更新] 拉取失败(网络不通或本地文件被改动), 继续使用当前版本 ($old)"
   fi
+elif [ ! -d .git ] && [ -z "$NO_UPDATE" ] && [ -z "$_UPDATED" ] && command -v curl >/dev/null 2>&1; then
+  # 没装 git: 用 curl 下载仓库压缩包覆盖 (Termux 自带 curl 和 tar)
+  REPO="${REPO:-Florist-xu/move}"; BR="${BRANCH:-master}"
+  TGZ="https://github.com/$REPO/archive/refs/heads/$BR.tar.gz"
+  tmp="${TMPDIR:-/tmp}/florist-tv-update.tgz"
+  echo "[更新] 下载最新版本..."
+  ok=""
+  for u in "$TGZ" "https://ghfast.top/$TGZ" "https://gh-proxy.com/$TGZ"; do
+    if curl -fsSL --connect-timeout 8 --max-time 90 -o "$tmp" "$u" && tar tzf "$tmp" >/dev/null 2>&1; then ok=1; break; fi
+  done
+  if [ -n "$ok" ]; then
+    new=$(cksum "$tmp" | cut -d' ' -f1)
+    if [ "$(cat .pkg_ver 2>/dev/null)" != "$new" ]; then
+      tar xzf "$tmp" --strip-components=1 && echo "$new" > .pkg_ver && echo "[更新] 已更新到最新版本"
+      rm -f "$tmp"
+      _UPDATED=1 exec bash "$0" "$@"
+    else
+      echo "[更新] 已是最新版本"
+    fi
+    rm -f "$tmp"
+  else
+    echo "[更新] 下载失败(网络不通), 继续使用当前版本"
+  fi
 fi
 
 # ---- 2. 依赖 (requirements.txt 变化时才重新安装) ----
