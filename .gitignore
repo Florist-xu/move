@@ -6,6 +6,7 @@ live_check.json
 qist_cache.json
 .deps_ok
 .pkg_ver
+.gh_token
 __pycache__/
 *.pyc
 

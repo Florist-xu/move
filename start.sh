@@ -4,14 +4,30 @@
 #   - 首次运行或依赖清单变化时自动安装依赖
 #   - 端口默认 8080, 可用 PORT=9000 bash start.sh 修改
 #   - 不想自动更新: NO_UPDATE=1 bash start.sh
+#   - 私有仓库: 先运行一次 bash start.sh token 保存访问令牌(只读即可), 令牌只存在本机 .gh_token
 cd "$(dirname "$0")" || exit 1
 export PORT="${PORT:-8080}"
+
+# 保存访问令牌: bash start.sh token   (输入时不显示; 令牌文件不会被更新覆盖, 也不会进仓库)
+if [ "$1" = "token" ]; then
+  printf "粘贴 GitHub 令牌(github_pat_...), 回车确认: "
+  read -rs t; echo
+  [ -z "$t" ] && { echo "未输入, 已取消"; exit 1; }
+  ( umask 077; printf '%s\n' "$t" > .gh_token )
+  echo "已保存到 $(pwd)/.gh_token"
+  shift
+  [ "$#" -eq 0 ] && set -- run
+fi
+[ "$1" = "run" ] && shift
+TOKEN="${GH_TOKEN:-$(head -n1 .gh_token 2>/dev/null | tr -d ' \r\n')}"
 
 # ---- 1. 自动更新 ----
 if [ -d .git ] && [ -z "$NO_UPDATE" ] && command -v git >/dev/null 2>&1; then
   old=$(git rev-parse --short HEAD 2>/dev/null)
   echo "[更新] 检查新版本..."
-  if timeout 40 git pull --ff-only --quiet 2>/dev/null; then
+  gitauth=()
+  [ -n "$TOKEN" ] && gitauth=(-c "http.extraHeader=Authorization: Basic $(printf 'x-access-token:%s' "$TOKEN" | base64 | tr -d '\n')")
+  if timeout 40 git "${gitauth[@]}" pull --ff-only --quiet 2>/dev/null; then
     new=$(git rev-parse --short HEAD 2>/dev/null)
     if [ "$old" != "$new" ]; then
       echo "[更新] 已更新: $old -> $new"
@@ -30,9 +46,18 @@ elif [ ! -d .git ] && [ -z "$NO_UPDATE" ] && [ -z "$_UPDATED" ] && command -v cu
   tmp="${TMPDIR:-/tmp}/florist-tv-update.tgz"
   echo "[更新] 下载最新版本..."
   ok=""
-  for u in "$TGZ" "https://ghfast.top/$TGZ" "https://gh-proxy.com/$TGZ"; do
-    if curl -fsSL --connect-timeout 8 --max-time 90 -o "$tmp" "$u" && tar tzf "$tmp" >/dev/null 2>&1; then ok=1; break; fi
-  done
+  if [ -n "$TOKEN" ]; then
+    # 有令牌(私有仓库): 走 GitHub API 下载, 只能直连
+    if curl -fsSL --connect-timeout 8 --max-time 90 -H "Authorization: Bearer $TOKEN" \
+         -o "$tmp" "https://api.github.com/repos/$REPO/tarball/$BR" && tar tzf "$tmp" >/dev/null 2>&1; then ok=1
+    else
+      echo "[更新] 令牌下载失败: 令牌可能过期/无权限, 或网络无法直连 GitHub"
+    fi
+  else
+    for u in "$TGZ" "https://ghfast.top/$TGZ" "https://gh-proxy.com/$TGZ"; do
+      if curl -fsSL --connect-timeout 8 --max-time 90 -o "$tmp" "$u" && tar tzf "$tmp" >/dev/null 2>&1; then ok=1; break; fi
+    done
+  fi
   if [ -n "$ok" ]; then
     new=$(cksum "$tmp" | cut -d' ' -f1)
     if [ "$(cat .pkg_ver 2>/dev/null)" != "$new" ]; then
